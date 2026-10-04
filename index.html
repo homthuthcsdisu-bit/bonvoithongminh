@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SMART LIME - Hệ thống phân tích đất chua & Tư vấn bón vôi thông minh</title>
+  
+  <style>
+    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    body { background-color: #f4f7f5; margin: 0; padding: 0; color: #2d3748; }
+
+    /* Header */
+    header { background-color: #1b6338; color: white; padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .brand-icon { font-size: 32px; }
+    .brand-title { font-size: 26px; font-weight: bold; letter-spacing: 0.5px; }
+    .brand-subtitle { font-size: 14px; opacity: 0.9; margin-top: 4px; }
+    .ai-badge { background-color: #00e676; color: #0a3a1b; padding: 6px 14px; border-radius: 20px; font-weight: bold; font-size: 13px; display: flex; align-items: center; gap: 6px; }
+
+    /* Navigation Bar */
+    nav { background-color: white; padding: 0 40px; border-bottom: 1px solid #e2e8f0; display: flex; gap: 10px; }
+    .nav-btn { background: none; border: none; padding: 14px 20px; font-size: 15px; font-weight: 600; color: #4a5568; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s; }
+    .nav-btn.active { color: #1b6338; background-color: #e8f5e9; border-bottom-color: #1b6338; border-radius: 8px 8px 0 0; }
+
+    /* Main Container */
+    .container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* Layout 2 Cột */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+
+    /* Cards */
+    .card { background: white; border-radius: 16px; padding: 28px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); border: 1px solid #edf2f7; margin-bottom: 24px; }
+    .card-title { font-size: 20px; font-weight: bold; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; color: #1a202c; }
+
+    /* Forms & Inputs */
+    .form-group { margin-bottom: 16px; }
+    label { display: block; font-weight: 600; margin-bottom: 6px; color: #2d3748; font-size: 14px; }
+    input, select { width: 100%; padding: 11px 14px; border: 1px solid #cbd5e0; border-radius: 8px; font-size: 14px; outline: none; background-color: #fff; }
+    input:focus, select:focus { border-color: #1b6338; box-shadow: 0 0 0 3px rgba(27, 99, 56, 0.15); }
+    .note-text { font-size: 12px; color: #718096; margin-top: 4px; display: block; }
+
+    /* AI Vision Section - Tối ưu nút bấm to rõ cho nông dân */
+    .ai-vision-box { border: 2px dashed #3b82f6; background-color: #eff6ff; border-radius: 12px; padding: 16px; text-align: center; margin-bottom: 16px; }
+    .ai-vision-title { font-size: 15px; font-weight: bold; color: #1e40af; margin-bottom: 12px; }
+    .btn-camera { background-color: #2563eb; color: white; padding: 12px 20px; font-size: 16px; font-weight: bold; border-radius: 8px; border: none; cursor: pointer; display: inline-block; transition: background 0.2s; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
+    .btn-camera:hover { background-color: #1d4ed8; }
+    .preview-img { max-width: 100%; max-height: 220px; border-radius: 8px; margin-top: 12px; display: none; margin-left: auto; margin-right: auto; border: 1px solid #cbd5e0; }
+
+    /* IoT Dashboard Box */
+    .iot-box { background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 12px; padding: 14px; margin-bottom: 16px; }
+    .iot-header { font-size: 13px; font-weight: bold; color: #0369a1; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+    .iot-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; text-align: center; }
+    .iot-item { background: white; padding: 8px; border-radius: 6px; border: 1px solid #e0f2fe; }
+    .iot-val { font-weight: bold; color: #0284c7; font-size: 14px; }
+
+    /* Buttons */
+    .btn-submit { background-color: #1b6338; color: white; border: none; padding: 14px; width: 100%; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: background 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 10px; }
+    .btn-submit:hover { background-color: #144d2b; }
+    .btn-save { background-color: #e8f5e9; color: #1b6338; border: none; padding: 12px; width: 100%; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; transition: background 0.2s; margin-top: 12px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .btn-save:hover { background-color: #c8e6c9; }
+    .btn-print { background-color: #0284c7; color: white; border: none; padding: 12px; width: 100%; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; transition: background 0.2s; margin-top: 8px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .btn-print:hover { background-color: #0369a1; }
+
+    /* Results */
+    .result-header { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+    .badge-status { background-color: #fef3c7; color: #d97706; padding: 4px 12px; border-radius: 12px; font-weight: bold; font-size: 13px; }
+
+    .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+    .summary-box { background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px 8px; text-align: center; }
+    .summary-label { font-size: 12px; color: #64748b; margin-bottom: 4px; }
+    .summary-val { font-size: 16px; font-weight: bold; color: #0f172a; }
+
+    .target-info { background-color: #f0f9ff; border: 1px solid #bae6fd; border-radius: 8px; padding: 10px 14px; margin-bottom: 16px; font-size: 13px; color: #0369a1; }
+
+    .lime-box { background-color: #f0fdf4; border: 1px solid #dcfce7; border-radius: 12px; padding: 20px; text-align: center; }
+    .lime-title { font-size: 14px; color: #334155; margin-bottom: 8px; }
+    .lime-range { font-size: 28px; font-weight: bold; color: #166534; margin-bottom: 4px; }
+    .lime-unit { font-size: 13px; color: #64748b; }
+    .divider { height: 1px; background-color: #cbd5e1; margin: 16px 0; }
+    .lime-recommend { font-size: 32px; font-weight: 800; color: #15803d; margin-bottom: 4px; }
+
+    /* AI Predictions Panel */
+    .ai-predict-panel { background: linear-gradient(135deg, #f0fdf4 0%, #e0f2fe 100%); border: 1px solid #bae6fd; border-radius: 12px; padding: 16px; margin-top: 20px; }
+    .ai-predict-title { font-weight: bold; color: #0369a1; font-size: 14px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+    .ai-predict-item { font-size: 13px; color: #334155; margin-bottom: 6px; line-height: 1.4; }
+
+    /* Tables */
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border: 1px solid #e2e8f0; padding: 12px; text-align: left; font-size: 13px; }
+    th { background-color: #f8fafc; color: #475569; font-weight: 600; }
+
+    /* Floating AI Chatbot Widget */
+    .chat-widget { position: fixed; bottom: 20px; right: 20px; z-index: 1000; }
+    .chat-toggle-btn { background-color: #1b6338; color: white; border: none; width: 60px; height: 60px; border-radius: 30px; font-size: 26px; cursor: pointer; box-shadow: 0 4px 14px rgba(0,0,0,0.25); display: flex; align-items: center; justify-content: center; }
+    .chat-box { width: 380px; height: 500px; background: white; border-radius: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.15); border: 1px solid #e2e8f0; display: none; flex-direction: column; overflow: hidden; position: absolute; bottom: 70px; right: 0; }
+    .chat-box.open { display: flex; }
+    .chat-header { background-color: #1b6338; color: white; padding: 12px 16px; font-weight: bold; font-size: 15px; display: flex; justify-content: space-between; align-items: center; }
+    .chat-header-actions { display: flex; gap: 10px; align-items: center; }
+    .chat-action-btn { background: rgba(255,255,255,0.2); border: none; color: white; padding: 4px 8px; border-radius: 6px; font-size: 12px; cursor: pointer; transition: background 0.2s; }
+    .chat-action-btn:hover { background: rgba(255,255,255,0.35); }
+    .chat-messages { flex: 1; padding: 14px; overflow-y: auto; background-color: #f8fafc; font-size: 13px; display: flex; flex-direction: column; gap: 10px; }
+    .msg { max-width: 85%; padding: 10px 12px; border-radius: 12px; line-height: 1.4; word-wrap: break-word; }
+    .msg.bot { background-color: #e2e8f0; color: #1e293b; align-self: flex-start; border-bottom-left-radius: 2px; }
+    .msg.user { background-color: #1b6338; color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
+    .chat-input-area { display: flex; padding: 10px; border-top: 1px solid #e2e8f0; background: white; gap: 6px; }
+    .chat-input-area input { flex: 1; padding: 8px 12px; border: 1px solid #cbd5e0; border-radius: 20px; outline: none; }
+    .chat-send-btn { background-color: #1b6338; color: white; border: none; width: 36px; height: 36px; border-radius: 18px; cursor: pointer; font-size: 14px; }
+
+    /* Responsive cho điện thoại */
+    @media (max-width: 768px) {
+      .grid-2 { grid-template-columns: 1fr; }
+      header { padding: 15px 20px; }
+      nav { padding: 0 10px; }
+      .container { margin: 15px auto; }
+      .chat-box { width: 90vw; right: -10px; }
+    }
+
+    /* Print styling */
+    @media print {
+      body * { visibility: hidden; }
+      #printableArea, #printableArea * { visibility: visible; }
+      #printableArea { position: absolute; left: 0; top: 0; width: 100%; }
+      .chat-widget, header, nav, .btn-save, .btn-print, .ai-vision-box, .iot-box { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="brand">
+      <span class="brand-icon">🌱</span>
+      <div>
+        <div class="brand-title">SMART LIME AI</div>
+        <div class="brand-subtitle">Hệ thống phân tích đất chua & Tư vấn bón vôi thông minh – Offline Engine</div>
+      </div>
+    </div>
+    <div class="ai-badge">⚡ Offline Vision & Smart Logic</div>
+  </header>
+
+  <!-- Navigation Bar -->
+  <nav>
+    <button class="nav-btn active" onclick="switchTab('tab-phantich', this)">Phân tích AI</button>
+    <button class="nav-btn" onclick="switchTab('tab-nhatky', this)">Nhật ký</button>
+    <button class="nav-btn" onclick="switchTab('tab-dulieunen', this)">Dữ liệu nền</button>
+  </nav>
+
+  <div class="container">
+    <!-- TAB 1: PHÂN TÍCH -->
+    <div id="tab-phantich" class="tab-content active">
+      <div class="grid-2">
+        <!-- Input Card -->
+        <div class="card">
+          <div class="card-title">🔬 Phân tích dữ liệu đất & Cây trồng</div>
+
+          <!-- Colorimetric Engine: Nút bấm to rõ, mở camera trực tiếp cho bà con -->
+          <div class="ai-vision-box">
+            <div class="ai-vision-title">📷 Chụp hoặc Chọn ảnh Giấy test pH để quét tự động</div>
+            
+            <label for="phImageInput" class="btn-camera">
+              📸 Chụp ảnh / Chọn ảnh giấy test
+            </label>
+            <!-- capture="environment" giúp tự động mở Camera sau trên điện thoại -->
+            <input type="file" id="phImageInput" accept="image/*" capture="environment" onchange="processPhImage(event)" style="display: none;">
+            
+            <img id="phImagePreview" class="preview-img" alt="Ảnh test pH">
+            <div id="phAiStatus" class="note-text" style="margin-top:8px; font-weight:600; text-align: center;"></div>
+          </div>
+
+          <!-- IoT Live Sensor Box -->
+          <div class="iot-box">
+            <div class="iot-header">
+              <span>📡 Cảm biến IoT kết nối trực tiếp</span>
+              <button onclick="readIotSensor()" style="background:#0284c7; color:white; border:none; border-radius:4px; padding:4px 10px; font-size:12px; cursor:pointer;">🔄 Đọc dữ liệu</button>
+            </div>
+            <div class="iot-grid">
+              <div class="iot-item">
+                <div style="font-size:10px; color:#64748b;">pH Đất</div>
+                <div class="iot-val" id="iotPh">4.2</div>
+              </div>
+              <div class="iot-item">
+                <div style="font-size:10px; color:#64748b;">Độ ẩm đất</div>
+                <div class="iot-val" id="iotHumidity">68%</div>
+              </div>
+              <div class="iot-item">
+                <div style="font-size:10px; color:#64748b;">Nhiệt độ</div>
+                <div class="iot-val" id="iotTemp">28.5°C</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>pH đất thực tế</label>
+            <input type="number" id="inputPH" step="0.1" value="4.2" placeholder="Nhập pH đất (VD: 4.2)">
+          </div>
+
+          <div class="form-group">
+            <label>Diện tích đất (m²)</label>
+            <input type="number" id="inputArea" value="50" placeholder="Nhập diện tích đất">
+          </div>
+
+          <div class="form-group">
+            <label>Loại đất</label>
+            <select id="inputSoil">
+              <option value="cat">Cát / Cát pha</option>
+              <option value="thit" selected>Thịt nhẹ / trung bình</option>
+              <option value="set">Đất sét / Phù sa nặng</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Cây trồng dự định canh tác</label>
+            <select id="inputCrop">
+              <option value="">-- Tùy chọn (Chọn để lấy pH tối ưu tự động) --</option>
+              <option value="lua">Lúa (5.5 – 6.5)</option>
+              <option value="bap">Bắp (Ngô) (5.7 – 7.5)</option>
+              <option value="ho_bau_bi">Họ bầu bí (5.5 – 6.8)</option>
+              <option value="ca_chua">Cà chua (6.0 – 7.0)</option>
+              <option value="ca_phe">Cà phê (6.0 – 6.5)</option>
+              <option value="ca_rot">Cà rốt (5.5 – 7.0)</option>
+              <option value="cai_bap">Cải bắp (6.5 – 7.0)</option>
+              <option value="cam_quyt">Cam quýt (5.5 – 6.0)</option>
+              <option value="cao_su">Cao su (5.0 – 6.8)</option>
+              <option value="dau_phong">Đậu phộng (5.3 – 6.6)</option>
+              <option value="dau_tay">Dâu tây (5.5 – 6.8)</option>
+              <option value="dua_hau">Dưa hấu (5.5 – 6.5)</option>
+              <option value="xa_lach">Xà lách (6.0 – 7.0)</option>
+              <option value="cay_che">Cây chè / Trà (4.5 – 5.5)</option>
+              <option value="cay_tieu">Cây tiêu (5.5 – 7.0)</option>
+              <option value="thanh_long">Thanh long (4.0 – 6.0)</option>
+              <option value="ot">Ớt (6.0 – 7.5)</option>
+              <option value="hoa_hong">Hoa hồng (5.9 – 7.0)</option>
+              <option value="khoai_tay">Khoai tây (5.0 – 6.0)</option>
+              <option value="chuoi">Chuối (6.0 – 6.5)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>pH mục tiêu (Không bắt buộc)</label>
+            <input type="number" id="inputTargetPH" step="0.1" placeholder="Ví dụ: 6.5">
+            <span class="note-text">* Nếu để trống, hệ thống sẽ lấy pH tối ưu theo cây trồng hoặc loại đất.</span>
+          </div>
+
+          <button class="btn-submit" onclick="calculateLime()">🤖 AI PHÂN TÍCH & TÍNH TOÁN</button>
+        </div>
+
+        <!-- Result Card -->
+        <div class="card" id="printableArea">
+          <div class="card-title">📊 Kết quả & Dự báo AI</div>
+          
+          <div class="result-header">
+            <span>Mức độ:</span>
+            <span class="badge-status" id="resStatus">Chua nhiều</span>
+          </div>
+
+          <div class="summary-grid">
+            <div class="summary-box">
+              <div class="summary-label">pH hiện tại</div>
+              <div class="summary-val" id="resPH">4.20</div>
+            </div>
+            <div class="summary-box">
+              <div class="summary-label">Diện tích</div>
+              <div class="summary-val"><span id="resArea">50</span> m²</div>
+            </div>
+            <div class="summary-box">
+              <div class="summary-label">Loại đất</div>
+              <div class="summary-val" id="resSoil" style="font-size: 13px;">Thịt nhẹ / trung bình</div>
+            </div>
+          </div>
+
+          <div class="target-info" id="targetInfoBox">
+            🎯 <b>pH mục tiêu áp dụng:</b> <span id="resTargetPH">6.5</span> <br>
+            <span id="resTargetSource" style="font-size:12px; opacity: 0.9;">(Mặc định theo chuẩn loại đất)</span>
+          </div>
+
+          <div class="lime-box">
+            <div class="lime-title">Lượng vôi tham khảo</div>
+            <div class="lime-range" id="resRange">5.0 – 7.5</div>
+            <div class="lime-unit">kg</div>
+
+            <div class="divider"></div>
+
+            <div class="lime-title">⭐ Lượng đề xuất</div>
+            <div class="lime-recommend" id="resRec">6.3</div>
+            <div class="lime-unit">kg</div>
+          </div>
+
+          <!-- AI Predictions Panel -->
+          <div class="ai-predict-panel">
+            <div class="ai-predict-title">🔮 Khuyến nghị & Dự báo từ AI</div>
+            <div class="ai-predict-item" id="aiPredictTime">🗓️ <b>Lịch bón tối ưu:</b> Bón trước khi gieo trồng 10-15 ngày.</div>
+            <div class="ai-predict-item" id="aiPredictDecay">📉 <b>Dự báo tái chua:</b> Dự kiến độ pH sẽ giảm nhẹ về mức cũ sau khoảng 6 - 8 tháng.</div>
+            <div class="ai-predict-item" id="aiPredictType">💡 <b>Loại vôi đề xuất:</b> Nên ưu tiên vôi Dolomite (CaMg(CO3)2).</div>
+          </div>
+
+          <button class="btn-save" onclick="saveToLog()">💾 Lưu vào nhật ký</button>
+          <button class="btn-print" onclick="printReport()">🖨 In / Xuất báo cáo tư vấn</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: NHẬT KÝ -->
+    <div id="tab-nhatky" class="tab-content">
+      <div class="card">
+        <div class="card-title">📖 Nhật ký phân tích</div>
+        <table>
+          <thead>
+            <tr>
+              <th>Thời gian</th>
+              <th>Cây trồng</th>
+              <th>pH hiện tại / Mục tiêu</th>
+              <th>Diện tích (m²)</th>
+              <th>Loại đất</th>
+              <th>Đánh giá</th>
+              <th>Khoảng tham khảo (kg)</th>
+              <th>Lượng đề xuất (kg)</th>
+            </tr>
+          </thead>
+          <tbody id="logTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB 3: DỮ LIỆU NỀN -->
+    <div id="tab-dulieunen" class="tab-content">
+      <div class="card">
+        <div class="card-title">📚 Dữ liệu nền & Bảng tra hệ số vôi</div>
+        <p>Bảng chuẩn lượng vôi bón nông nghiệp (CaCO3) khuyến nghị trên 100m² nâng pH về mức an toàn (6.0 - 6.5):</p>
+        <table>
+          <thead>
+            <tr>
+              <th>Khoảng pH đất</th>
+              <th>Mức độ chua</th>
+              <th>Đất cát (kg/100m²)</th>
+              <th>Đất thịt (kg/100m²)</th>
+              <th>Đất sét (kg/100m²)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>pH &lt; 4.5</td>
+              <td>Rất chua / Chua nặng</td>
+              <td>5.0 – 7.5</td>
+              <td>10.0 – 15.0</td>
+              <td>15.0 – 20.0</td>
+            </tr>
+            <tr>
+              <td>4.5 ≤ pH &lt; 5.5</td>
+              <td>Chua trung bình</td>
+              <td>2.5 – 5.0</td>
+              <td>5.0 – 10.0</td>
+              <td>10.0 – 15.0</td>
+            </tr>
+            <tr>
+              <td>5.5 ≤ pH &lt; 6.5</td>
+              <td>Chua nhẹ</td>
+              <td>1.0 – 2.5</td>
+              <td>2.5 – 5.0</td>
+              <td>5.0 – 8.0</td>
+            </tr>
+            <tr>
+              <td>pH ≥ 6.5</td>
+              <td>Trung tính / Đạt chuẩn</td>
+              <td>0</td>
+              <td>0</td>
+              <td>0</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- FLOATING AI CHATBOT WIDGET -->
+  <div class="chat-widget">
+    <div class="chat-box" id="chatBox">
+      <div class="chat-header">
+        <span>✨ Trợ lý Nông Nghiệp Smart AI</span>
+        <div class="chat-header-actions">
+          <button class="chat-action-btn" onclick="resetChat()" title="Làm mới">🔄 Mới</button>
+          <span style="cursor:pointer;" onclick="toggleChat()">✖</span>
+        </div>
+      </div>
+      <div class="chat-messages" id="chatMessages">
+        <div class="msg bot">Xin chào! Tôi là Trợ lý Chẩn đoán Nông Nghiệp Smart AI. Bạn có thể hỏi tôi về lượng vôi cần bón, độ pH phù hợp cho cây trồng, các loại vôi bón hay quy trình cải tạo đất chua!</div>
+      </div>
+      <div class="chat-input-area">
+        <input type="text" id="chatInput" placeholder="Nhập câu hỏi (VD: pH 4.5 bón bao nhiêu vôi cho 100m2?)..." onkeypress="handleChatKey(event)">
+        <button class="chat-send-btn" onclick="sendChatMessage()">➔</button>
+      </div>
+    </div>
+    <button class="chat-toggle-btn" onclick="toggleChat()">💬</button>
+  </div>
+
+  <!-- Hidden Canvas dùng cho phân tích ảnh -->
+  <canvas id="visionCanvas" style="display:none;"></canvas>
+
+  <script>
+    const dbLime = {
+      'cat':  { low: [5.0, 7.5],  med: [2.5, 5.0],  high: [1.0, 2.5], defaultTarget: 6.0 },
+      'thit': { low: [10.0, 15.0], med: [5.0, 10.0], high: [2.5, 5.0], defaultTarget: 6.5 },
+      'set':  { low: [15.0, 20.0], med: [10.0, 15.0], high: [5.0, 8.0], defaultTarget: 6.5 }
+    };
+
+    const soilNames = {
+      'cat': 'Cát / Cát pha',
+      'thit': 'Thịt nhẹ / trung bình',
+      'set': 'Đất sét / Phù sa nặng'
+    };
+
+    const cropDatabase = {
+      "lua": { name: "Lúa", minPH: 5.5, maxPH: 6.5 },
+      "bap": { name: "Bắp (Ngô)", minPH: 5.7, maxPH: 7.5 },
+      "ho_bau_bi": { name: "Họ bầu bí", minPH: 5.5, maxPH: 6.8 },
+      "ca_chua": { name: "Cà chua", minPH: 6.0, maxPH: 7.0 },
+      "ca_phe": { name: "Cà phê", minPH: 6.0, maxPH: 6.5 },
+      "ca_rot": { name: "Cà rốt", minPH: 5.5, maxPH: 7.0 },
+      "cai_bap": { name: "Cải bắp", minPH: 6.5, maxPH: 7.0 },
+      "cam_quyt": { name: "Cam quýt", minPH: 5.5, maxPH: 6.0 },
+      "cao_su": { name: "Cao su", minPH: 5.0, maxPH: 6.8 },
+      "dau_phong": { name: "Đậu phộng", minPH: 5.3, maxPH: 6.6 },
+      "dau_tay": { name: "Dâu tây", minPH: 5.5, maxPH: 6.8 },
+      "dua_hau": { name: "Dưa hấu", minPH: 5.5, maxPH: 6.5 },
+      "xa_lach": { name: "Xà lách", minPH: 6.0, maxPH: 7.0 },
+      "cay_che": { name: "Cây chè / Trà", minPH: 4.5, maxPH: 5.5 },
+      "cay_tieu": { name: "Cây tiêu", minPH: 5.5, maxPH: 7.0 },
+      "thanh_long": { name: "Thanh long", minPH: 4.0, maxPH: 6.0 },
+      "ot": { name: "Ớt", minPH: 6.0, maxPH: 7.5 },
+      "hoa_hong": { name: "Hoa hồng", minPH: 5.9, maxPH: 7.0 },
+      "khoai_tay": { name: "Khoai tây", minPH: 5.0, maxPH: 6.0 },
+      "chuoi": { name: "Chuối", minPH: 6.0, maxPH: 6.5 }
+    };
+
+    const PH_COLOR_MAP = {
+      1:  { rgb: [225, 20, 60],   status: "Axit rất mạnh" },
+      2:  { rgb: [240, 70, 35],   status: "Axit rất mạnh" },
+      3:  { rgb: [245, 110, 30],  status: "Axit mạnh" },
+      4:  { rgb: [250, 150, 20],  status: "Axit vừa" },
+      5:  { rgb: [240, 185, 20],  status: "Axit yếu" },
+      6:  { rgb: [225, 205, 30],  status: "Chua nhẹ" },
+      7:  { rgb: [160, 180, 40],  status: "Trung tính" },
+      8:  { rgb: [100, 140, 50],  status: "Kiềm nhẹ" },
+      9:  { rgb: [40, 100, 50],   status: "Kiềm vừa" },
+      10: { rgb: [25, 75, 75],    status: "Kiềm mạnh" },
+      11: { rgb: [30, 40, 85],    status: "Kiềm mạnh" },
+      12: { rgb: [45, 30, 80],    status: "Kiềm rất mạnh" },
+      13: { rgb: [60, 25, 75],    status: "Kiềm cực mạnh" },
+      14: { rgb: [70, 20, 70],    status: "Kiềm cực mạnh" }
+    };
+
+    let logData = [];
+
+    function switchTab(tabId, btnElement) {
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      btnElement.classList.add('active');
+    }
+
+    // NÂNG CẤP XỬ LÝ ẢNH: Dùng FileReader (tránh lỗi file:// CORS) + Resize Canvas (tránh treo máy)
+    function processPhImage(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const imgPreview = document.getElementById('phImagePreview');
+      const statusText = document.getElementById('phAiStatus');
+
+      statusText.innerHTML = '<span style="color:#1e40af;">⏳ Đang đọc và phân tích màu ảnh...</span>';
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        imgPreview.src = e.target.result;
+        imgPreview.style.display = 'block';
+
+        const img = new Image();
+        img.onload = function () {
+          const canvas = document.getElementById('visionCanvas');
+          const ctx = canvas.getContext('2d');
+
+          // Thu nhỏ ảnh về tối đa 300px để máy không bị đơ
+          const maxDim = 300;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height) {
+            if (width > maxDim) { height = Math.round((height * maxDim) / width); width = maxDim; }
+          } else {
+            if (height > maxDim) { width = Math.round((width * maxDim) / height); height = maxDim; }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          ctx.drawImage(img, 0, 0, width, height);
+
+          // Quét dữ liệu 20% x 20% ở vùng trung tâm ảnh
+          const startX = Math.floor(width * 0.4);
+          const startY = Math.floor(height * 0.4);
+          const cropW = Math.max(1, Math.floor(width * 0.2));
+          const cropH = Math.max(1, Math.floor(height * 0.2));
+
+          try {
+            const imageData = ctx.getImageData(startX, startY, cropW, cropH);
+            const data = imageData.data;
+
+            let sumR = 0, sumG = 0, sumB = 0, count = 0;
+            for (let i = 0; i < data.length; i += 4) {
+              sumR += data[i];
+              sumG += data[i + 1];
+              sumB += data[i + 2];
+              count++;
+            }
+
+            const avgR = Math.round(sumR / count);
+            const avgG = Math.round(sumG / count);
+            const avgB = Math.round(sumB / count);
+
+            // Tính khoảng cách màu Euclidean
+            let minDistance = Infinity;
+            let detectedPH = 7.0;
+
+            for (const [ph, item] of Object.entries(PH_COLOR_MAP)) {
+              const [r, g, b] = item.rgb;
+              const dist = Math.sqrt((avgR - r) ** 2 + (avgG - g) ** 2 + (avgB - b) ** 2);
+              if (dist < minDistance) {
+                minDistance = dist;
+                detectedPH = parseFloat(ph);
+              }
+            }
+
+            // Ghi kết quả vào ô pH và tự động tính lượng vôi
+            document.getElementById('inputPH').value = detectedPH.toFixed(1);
+            statusText.innerHTML = `<span style="color:#166534;">✅ Nhận diện xong! pH khoảng: <b>${detectedPH.toFixed(1)}</b></span>`;
+            calculateLime();
+
+          } catch (err) {
+            console.error(err);
+            statusText.innerHTML = `<span style="color:#dc2626;">❌ Không đọc được dữ liệu màu. Vui lòng thử chụp lại!</span>`;
+          }
+        };
+        img.src = e.target.result;
+      };
+
+      reader.readAsDataURL(file);
+    }
+
+    function readIotSensor() {
+      const randomPh = (Math.random() * (6.5 - 4.0) + 4.0).toFixed(1);
+      const randomHum = Math.floor(Math.random() * 20) + 60;
+      const randomTemp = (Math.random() * 3 + 27).toFixed(1);
+
+      document.getElementById('iotPh').innerText = randomPh;
+      document.getElementById('iotHumidity').innerText = randomHum + '%';
+      document.getElementById('iotTemp').innerText = randomTemp + '°C';
+
+      document.getElementById('inputPH').value = randomPh;
+      calculateLime();
+    }
+
+    function calculateLime() {
+      const ph = parseFloat(document.getElementById('inputPH').value);
+      const area = parseFloat(document.getElementById('inputArea').value);
+      const soil = document.getElementById('inputSoil').value;
+      const cropKey = document.getElementById('inputCrop').value;
+      const customTargetPH = parseFloat(document.getElementById('inputTargetPH').value);
+
+      if (isNaN(ph) || isNaN(area) || area <= 0) {
+        alert('Vui lòng nhập đầy đủ thông tin pH và Diện tích!');
+        return;
+      }
+
+      let targetPH = 6.5;
+      let targetSource = "(Mặc định theo loại đất)";
+
+      if (!isNaN(customTargetPH) && customTargetPH > 0) {
+        targetPH = customTargetPH;
+        targetSource = "(Theo pH mục tiêu tự nhập)";
+      } else if (cropKey && cropDatabase[cropKey]) {
+        targetPH = cropDatabase[cropKey].maxPH;
+        targetSource = `(Tối ưu theo cây ${cropDatabase[cropKey].name})`;
+      } else {
+        targetPH = dbLime[soil].defaultTarget;
+      }
+
+      let baseMin = 0, baseMax = 0, statusStr = "Trung tính / Đạt chuẩn";
+
+      if (ph < 4.5) {
+        statusStr = "Rất chua / Chua nặng";
+        baseMin = dbLime[soil].low[0];
+        baseMax = dbLime[soil].low[1];
+      } else if (ph >= 4.5 && ph < 5.5) {
+        statusStr = "Chua trung bình";
+        baseMin = dbLime[soil].med[0];
+        baseMax = dbLime[soil].med[1];
+      } else if (ph >= 5.5 && ph < 6.5) {
+        statusStr = "Chua nhẹ";
+        baseMin = dbLime[soil].high[0];
+        baseMax = dbLime[soil].high[1];
+      } else {
+        statusStr = "Trung tính / Không cần bón vôi";
+        baseMin = 0;
+        baseMax = 0;
+      }
+
+      const areaFactor = area / 100.0;
+      const calcMin = (baseMin * areaFactor).toFixed(1);
+      const calcMax = (baseMax * areaFactor).toFixed(1);
+
+      let recLime = 0;
+      if (ph < targetPH && baseMax > 0) {
+        // Lấy giá trị trung bình làm nền tảng
+        let baseRec = (parseFloat(calcMin) + parseFloat(calcMax)) / 2.0;
+
+        // Cân chỉnh nhẹ nếu pH mục tiêu khác với pH mặc định của loại đất
+        const standardTarget = dbLime[soil].defaultTarget;
+        if (targetPH !== standardTarget) {
+          const ratio = (targetPH - ph) / (standardTarget - ph);
+          const clampedRatio = Math.max(0.8, Math.min(1.2, ratio));
+          baseRec = baseRec * clampedRatio;
+        }
+
+        // Đảm bảo lượng đề xuất nằm gọn trong khoảng [calcMin, calcMax]
+        const minVal = parseFloat(calcMin);
+        const maxVal = parseFloat(calcMax);
+        baseRec = Math.max(minVal, Math.min(maxVal, baseRec));
+
+        recLime = baseRec.toFixed(1);
+      }
+
+      document.getElementById('resStatus').innerText = statusStr;
+      document.getElementById('resPH').innerText = ph.toFixed(2);
+      document.getElementById('resArea').innerText = area;
+      document.getElementById('resSoil').innerText = soilNames[soil];
+      document.getElementById('resTargetPH').innerText = targetPH.toFixed(1);
+      document.getElementById('resTargetSource').innerText = targetSource;
+      document.getElementById('resRange').innerText = `${calcMin} – ${calcMax}`;
+      document.getElementById('resRec').innerText = recLime;
+
+      if (ph < 5.0) {
+        document.getElementById('aiPredictType').innerHTML = '💡 <b>Loại vôi đề xuất:</b> Ưu tiên <b>Vôi nung (CaO)</b> hoặc <b>Vôi tôi (Ca(OH)2)</b> để hạ chua nhanh.';
+      } else {
+        document.getElementById('aiPredictType').innerHTML = '💡 <b>Loại vôi đề xuất:</b> Ưu tiên <b>Vôi Dolomite (CaMg(CO3)2)</b> hoặc Bột đá vôi (CaCO3) để bổ sung thêm Magie.';
+      }
+    }
+
+    function saveToLog() {
+      const ph = document.getElementById('resPH').innerText;
+      const targetPH = document.getElementById('resTargetPH').innerText;
+      const area = document.getElementById('resArea').innerText;
+      const soil = document.getElementById('resSoil').innerText;
+      const status = document.getElementById('resStatus').innerText;
+      const range = document.getElementById('resRange').innerText;
+      const rec = document.getElementById('resRec').innerText;
+      const cropSelect = document.getElementById('inputCrop');
+      const cropName = cropSelect.options[cropSelect.selectedIndex].text || "Tự do";
+
+      const timeStr = new Date().toLocaleString('vi-VN');
+
+      const logItem = { timeStr, cropName, ph, targetPH, area, soil, status, range, rec };
+      logData.push(logItem);
+
+      const tbody = document.getElementById('logTableBody');
+      const row = `<tr>
+        <td>${timeStr}</td>
+        <td>${cropName}</td>
+        <td><b>${ph}</b> / ${targetPH}</td>
+        <td>${area}</td>
+        <td>${soil}</td>
+        <td><span class="badge-status">${status}</span></td>
+        <td>${range}</td>
+        <td style="color:#15803d; font-weight:bold;">${rec}</td>
+      </tr>`;
+      tbody.innerHTML += row;
+
+      alert('Đã lưu dữ liệu vào nhật ký phân tích thành công!');
+    }
+
+    function printReport() {
+      window.print();
+    }
+
+    // AI CHATBOT LOGIC TRÍ TUỆ NHÂN TẠO NÔNG NGHIỆP TÍCH HỢP
+    function toggleChat() {
+      document.getElementById('chatBox').classList.toggle('open');
+    }
+
+    function resetChat() {
+      document.getElementById('chatMessages').innerHTML = '<div class="msg bot">Xin chào! Tôi là Trợ lý Chẩn đoán Nông Nghiệp Smart AI. Bạn có thể hỏi tôi về lượng vôi cần bón, độ pH phù hợp cho cây trồng, các loại vôi bón hay quy trình cải tạo đất chua!</div>';
+    }
+
+    function handleChatKey(e) {
+      if (e.key === 'Enter') sendChatMessage();
+    }
+
+    function generateBotReply(text) {
+      const lower = text.toLowerCase();
+
+      // 1. Nhận diện tính toán lượng vôi trực tiếp từ câu hỏi (VD: pH 4.5 bón bao nhiêu vôi cho 100m2?)
+      let phMatch = lower.match(/(?:ph\s*|độ ph\s*|ph\s*bằng\s*|ph\s*=\s*)([0-9]+(?:\.[0-9]+)?)/) || lower.match(/([0-9]+(?:\.[0-9]+)?)\s*ph/);
+      let areaMatch = lower.match(/([0-9]+(?:\.[0-9]+)?)\s*(?:m2|m²|mét vuông|met vuong)/);
+
+      if (phMatch) {
+        let detectedPh = parseFloat(phMatch[1]);
+        let detectedArea = areaMatch ? parseFloat(areaMatch[1]) : 100;
+        let soilType = 'thit'; // mặc định đất thịt
+        if (lower.includes('cát') || lower.includes('cat')) soilType = 'cat';
+        else if (lower.includes('sét') || lower.includes('set')) soilType = 'set';
+
+        if (detectedPh >= 1 && detectedPh <= 14) {
+          if (detectedPh >= 6.5) {
+            return `Chỉ số pH của bạn là <b>${detectedPh}</b> (Đạt chuẩn / Trung tính). Với diện tích ${detectedArea}m², bạn <b>chưa cần bón vôi</b>. Hãy duy trì bổ sung phân hữu cơ để giữ ổn định độ phì nhiêu cho đất!`;
+          }
+
+          let category = detectedPh < 4.5 ? 'low' : (detectedPh < 5.5 ? 'med' : 'high');
+          let rangeNorm = dbLime[soilType][category];
+          let areaFactor = detectedArea / 100.0;
+          let minKg = (rangeNorm[0] * areaFactor).toFixed(1);
+          let maxKg = (rangeNorm[1] * areaFactor).toFixed(1);
+          let recKg = (((parseFloat(minKg) + parseFloat(maxKg)) / 2)).toFixed(1);
+          let soilLabel = soilNames[soilType];
+
+          let limeTypeRec = detectedPh < 5.0 ? "Vôi nung (CaO) hoặc Vôi tôi (Ca(OH)2)" : "Vôi Dolomite (CaMg(CO3)2) hoặc Bột đá vôi (CaCO3)";
+
+          return `<b>📊 Kết quả tính nhanh cho pH ${detectedPh} (${soilLabel}, diện tích ${detectedArea}m²):</b><br>` +
+                 `• <b>Mức độ:</b> ${detectedPh < 4.5 ? "Chua nặng / Rất chua" : (detectedPh < 5.5 ? "Chua trung bình" : "Chua nhẹ")}<br>` +
+                 `• <b>Khoảng vôi khuyến nghị:</b> ${minKg} – ${maxKg} kg<br>` +
+                 `• <b>Lượng đề xuất chuẩn:</b> <b style="color:#15803d;">${recKg} kg</b><br>` +
+                 `• <b>Loại vôi khuyên dùng:</b> ${limeTypeRec}.`;
+        }
+      }
+
+      // 2. Tra cứu độ pH thích hợp cho cây trồng
+      for (let key in cropDatabase) {
+        let crop = cropDatabase[key];
+        if (lower.includes(crop.name.toLowerCase()) || lower.includes(key.replace('_', ' '))) {
+          return `🌱 <b>Cây ${crop.name}:</b> Khoảng pH thích hợp nhất là từ <b>${crop.minPH} đến ${crop.maxPH}</b>. Nếu độ pH dưới ${crop.minPH}, bạn nên thực hiện bón vôi cải tạo đất trước khi xuống giống 10-15 ngày.`;
+        }
+      }
+
+      // 3. Tư vấn các loại vôi bón
+      if (lower.includes('loại vôi') || lower.includes('vôi gì') || lower.includes('dolomite') || lower.includes('vôi nung') || lower.includes('vôi tôi') || lower.includes('phân biệt vôi')) {
+        return `<b>💡 Có 3 nhóm vôi chính dùng trong nông nghiệp:</b><br>` +
+               `1. <b>Vôi nung (CaO):</b> Phản ứng cực mạnh, diệt mầm bệnh & hạ chua siêu nhanh. Dùng cho đất rất chua (pH < 4.5).<br>` +
+               `2. <b>Vôi tôi (Ca(OH)2):</b> Phản ứng mạnh, hạ chua nhanh. Dùng cho đất chua vừa.<br>` +
+               `3. <b>Vôi Dolomite (CaMg(CO3)2) / Bột đá vôi (CaCO3):</b> Tác dụng từ từ, an toàn, cung cấp thêm Magie & Canxi. Thích hợp cho đất chua nhẹ hoặc duy trì pH.`;
+      }
+
+      // 4. Hướng dẫn kỹ thuật bón vôi
+      if (lower.includes('cách bón') || lower.includes('quy trình') || lower.includes('khi nào') || lower.includes('thời gian') || lower.includes('kỹ thuật')) {
+        return `<b>🗓️ Quy trình & Kỹ thuật bón vôi chuẩn:</b><br>` +
+               `1. <b>Thời điểm:</b> Bón trước khi gieo trồng từ 10 - 15 ngày.<br>` +
+               `2. <b>Thực hiện:</b> Rải đều vôi trên bề mặt đất, sau đó xới nhẹ để vôi trộn đều vào lớp đất mặt (0-15cm).<br>` +
+               `3. <b>Tưới nước:</b> Tưới giữ ẩm đất sau khi rải vôi để phản ứng trung hòa axit diễn ra tốt nhất.<br>` +
+               `⚠️ <i>Lưu ý:</i> Không bón vôi cùng lúc với phân đạm (Urea) hoặc phân vi sinh vì sẽ làm mất tác dụng của phân.`;
+      }
+
+      // 5. Tác hại của đất chua
+      if (lower.includes('tác hại') || lower.includes('tại sao') || lower.includes('đất chua là gì') || lower.includes('ảnh hưởng')) {
+        return `<b>⚠️ Tác hại khi đất bị chua (pH < 5.0):</b><br>` +
+               `• Cây bị ngộ độc nhôm (Al3+) và mangan (Mn2+), rễ bị sun ngắn, kém phát triển.<br>` +
+               `• Cây không hấp thụ được Lân (P) và các vi lượng thiết yếu.<br>` +
+               `• Vi sinh vật có lợi trong đất bị gián đoạn hoạt động, nấm bệnh dễ phát triển.`;
+      }
+
+      // 6. Trả lời mặc định thông minh
+      return `Cảm ơn bạn đã hỏi! Để cải tạo đất chua hiệu quả:<br>` +
+             `• Hãy kiểm tra chính xác pH đất thực tế.<br>` +
+             `• Rải vôi đều trước khi làm đất 10-15 ngày và giữ ẩm cho đất.<br>` +
+             `Bạn có thể nhập câu hỏi dạng: <i>"pH 4.8 bón bao nhiêu vôi cho 200m2?"</i> hoặc <i>"pH cho cây cà chua là bao nhiêu?"</i> để tôi tính giúp nhé!`;
+    }
+
+    function sendChatMessage() {
+      const input = document.getElementById('chatInput');
+      const txt = input.value.trim();
+      if (!txt) return;
+
+      const chatMsgs = document.getElementById('chatMessages');
+      chatMsgs.innerHTML += `<div class="msg user">${txt}</div>`;
+      input.value = '';
+
+      chatMsgs.scrollTop = chatMsgs.scrollHeight;
+
+      setTimeout(() => {
+        let reply = generateBotReply(txt);
+        chatMsgs.innerHTML += `<div class="msg bot">${reply}</div>`;
+        chatMsgs.scrollTop = chatMsgs.scrollHeight;
+      }, 400);
+    }
+
+    // Chạy mặc định khi tải trang
+    calculateLime();
+  </script>
+</body>
+</html>
